@@ -31,6 +31,7 @@ contract RegisterDisaster {
         p.firstName = _firstName;
         p.lastName = _lastName;
         p.addr = _address;
+        idToIndex[_idCard] = people.length;
     }
 
     // ฟังก์ชันสำหรับขอข้อมูลผู้เข้าร่วมทั้งหมด
@@ -47,12 +48,8 @@ contract RegisterDisaster {
     // ฟังก์ชันสำหรับขอข้อมูลผู้เข้าร่วมที่มี idCard ที่กำหนด
     // ใช้ idToIndex เพื่อหาดัชนีของผู้เข้าร่วมที่มี idCard ตรงกัน
     function getID(string memory _idCard) public view returns (Person memory) {
-        for (uint i = 0; i < people.length; i++) {
-        if (keccak256(abi.encodePacked(people[i].idCard)) == keccak256(abi.encodePacked(_idCard))) {
-            Person storage p = people[i];
-            return p;
-        }
-    }
-    revert("Person not found");
+        uint256 index = idToIndex[_idCard];
+        require(index != 0, "Person not found");
+        return people[index - 1];
     }
 }
